@@ -1,5 +1,7 @@
 package com.uniquehire.training.serviceimpl;
 
+import com.uniquehire.cafe.dto.OrderResponseDTO;
+import com.uniquehire.training.config.RestTemplateConfig;
 import com.uniquehire.training.dto.UserProfileDTO;
 import com.uniquehire.training.dto.UserRequestDTO;
 import com.uniquehire.training.dto.UserResponseDTO;
@@ -8,12 +10,18 @@ import com.uniquehire.training.model.UserProfile;
 import com.uniquehire.training.repository.UserProfileRepository;
 import com.uniquehire.training.repository.UserRepository;
 import com.uniquehire.training.service.UserService;
+import com.uniquehire.training.utils.RestTemplateUtils;
 import com.uniquehire.training.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,13 +30,18 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
+    private final RestTemplateConfig restTemplateConfig;
+    private final RestTemplateUtils restTemplateUtils;
     /*@Autowired
     private final UserUtils userUtils;*/
 
-    public UserServiceImpl(UserRepository userRepository, UserProfileRepository userProfileRepository/*, UserUtils userUtils*/) {
+    public UserServiceImpl(UserRepository userRepository, UserProfileRepository userProfileRepository/*, UserUtils userUtils*/,
+                           RestTemplateConfig restTemplateConfig, RestTemplateUtils restTemplateUtils) {
         this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
        // this.userUtils = userUtils;
+        this.restTemplateConfig = restTemplateConfig;
+        this.restTemplateUtils = restTemplateUtils;
     }
 
     public User saveUser(UserRequestDTO userDTO) {
@@ -57,6 +70,23 @@ public class UserServiceImpl implements UserService {
             UserResponseDTO responseDTO = userUtils.prepareUserResponse(user);
             userResponseList.add(responseDTO);
         }
+        //RestTemplate restTemplate = restTemplateConfig.getRestTemplate();
+        final String uri = "http://cafe";
+        String url = uri + "/api/orders/getOrders?tableName=Table-5";
+        /*OrderResponseDTO[] response =
+                restTemplate.getForObject("http://192.168.0.88:8085/api/orders/getOrders?tableName=Table-5", OrderResponseDTO[].class);
+
+        System.err.println(response);
+        System.out.println(Arrays.asList(response));*/
+        /*ResponseEntity<List<OrderResponseDTO>> response =
+                restTemplate.exchange(
+                        uri,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<OrderResponseDTO>>() {}
+                );*/
+        ResponseEntity<List<OrderResponseDTO>> response = restTemplateUtils.callIntermicroServiceCommunication(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<OrderResponseDTO>>() {});
+        System.out.println(response.getBody());
         return userResponseList;
     }
 
