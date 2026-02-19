@@ -13,6 +13,9 @@ import com.uniquehire.cafe.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -106,6 +109,14 @@ public class OrderServiceImpl implements OrderService {
         return responseDTO;
     }
 
+    @Override
+    public Page<OrderResponseDTO> getAllOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Order> orderPage = orderRepository.findAll(pageable);
+
+        return orderPage.map(this::mapToOrderResponseDTO);
+    }
 
     @Override
     public List<OrderResponseDTO> getAllOrders() {

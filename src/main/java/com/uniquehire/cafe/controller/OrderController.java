@@ -6,6 +6,7 @@ import com.uniquehire.cafe.dto.ResponseDTO;
 import com.uniquehire.cafe.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,14 @@ public class OrderController {
     public List<OrderResponseDTO> getAllOrders(@RequestParam String tableName){
         List<OrderResponseDTO> responseDTOS =  orderService.getAllOrders();
         return  responseDTOS;
+    }
+
+    @GetMapping("/getAllorders/pagination")
+    public Page<OrderResponseDTO> getAllOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        return orderService.getAllOrders(page, size);
     }
 
     @GetMapping("/getOrders/{id}")
