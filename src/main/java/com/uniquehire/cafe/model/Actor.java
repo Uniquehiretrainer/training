@@ -1,12 +1,18 @@
 package com.uniquehire.cafe.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "actors")
 public class Actor {
@@ -26,12 +32,8 @@ public class Actor {
     )
     private Set<Movie> movies = new HashSet<>();
 
-    // helper method
     public void addMovie(Movie movie) {
         this.movies.add(movie);
         movie.getActors().add(this);
     }
-
-    // getters & setters
 }
-

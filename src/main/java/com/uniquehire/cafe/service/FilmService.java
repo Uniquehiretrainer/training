@@ -1,14 +1,16 @@
 package com.uniquehire.cafe.service;
 
-import com.uniquehire.cafe.model.Actor;
-import com.uniquehire.cafe.model.Movie;
+import com.uniquehire.cafe.dto.ActorRequestDTO;
+import com.uniquehire.cafe.dto.ActorResponseDTO;
+import com.uniquehire.cafe.dto.MovieSimpleDTO;
 
 import java.util.List;
 
 public interface FilmService {
-    Actor saveActor(Actor actor);
 
-    List<Actor> getAllActors();
+    ActorResponseDTO saveActor(ActorRequestDTO dto);
 
-    List<Movie> getAllMovies();
+    List<ActorResponseDTO> getAllActors();
+
+    List<MovieSimpleDTO> getAllMovies();
 }
